@@ -110,7 +110,10 @@ module Leaflet
       end
       output << "}).addTo(map);"
 
-      output << "setTimeout(function(){ map.invalidateSize()}, 1000);" if refresh
+      if refresh
+        output << "setTimeout(function(){ map.invalidateSize()}, 1000);"
+        output << "setTimeout(function(){ map.invalidateSize()}, 3000);"
+      end
 
       output << "</script>"
       output.join("\n").html_safe
