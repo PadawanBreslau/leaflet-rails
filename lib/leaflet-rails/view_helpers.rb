@@ -98,6 +98,7 @@ module Leaflet
         output << "#{key.to_s.camelize(:lower)}: '#{value}',"
       end
       output << "}).addTo(map);"
+      output << "setTimeout(function(){ map.invalidateSize()}, 250)";
 
       output << "</script>"
       output.join("\n").html_safe
