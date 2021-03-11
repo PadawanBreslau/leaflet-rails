@@ -19,9 +19,11 @@ module Leaflet
       markers = options.delete(:markers)
       circles = options.delete(:circles)
       polylines = options.delete(:polylines)
+      polygons = options.delete(:polygons)
       geojsons = options.delete(:geojsons)
       fitbounds = options.delete(:fitbounds)
       subdomains = options.delete(:subdomains)
+      refresh = options.delete(:refresh)
 
       output = []
       output << "<div id='#{container_id}'></div>" unless no_container
@@ -66,6 +68,15 @@ module Leaflet
         end
       end
 
+      if polygons
+        polygons.each do |polygon|
+          _output = "L.polygon(#{polygon[:latlngs]}"
+          _output << "," + polygon[:options].to_json if polygon[:options]
+          _output << ").addTo(map);"
+          output << _output.gsub(/\n/,'')
+        end
+      end
+
       if geojsons
         geojsons.each do |geojson|
           _output = "L.geoJSON(#{geojson[:geojson]}"
@@ -98,7 +109,8 @@ module Leaflet
         output << "#{key.to_s.camelize(:lower)}: '#{value}',"
       end
       output << "}).addTo(map);"
-      output << "setTimeout(function(){ map.invalidateSize()}, 250)";
+
+      output << "setTimeout(function(){ map.invalidateSize()}, 1000);" if refresh
 
       output << "</script>"
       output.join("\n").html_safe
